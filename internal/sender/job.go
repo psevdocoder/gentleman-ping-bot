@@ -10,9 +10,9 @@ import (
 	"text/template"
 	"time"
 
-	"git.server.lan/pkg/config/realtimeconfig"
 	"github.com/google/uuid"
 	"github.com/psevdocoder/gentleman-ping-bot/internal/config"
+	"github.com/psevdocoder/gentleman-ping-bot/pkg/realtimeconfig"
 )
 
 const (

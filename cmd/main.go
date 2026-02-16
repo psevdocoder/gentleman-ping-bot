@@ -8,14 +8,12 @@ import (
 	"os/signal"
 	"syscall"
 
-	//"git.server.lan/pkg/config/realtimeconfig"
-
-	"git.server.lan/pkg/config/realtimeconfig"
 	"github.com/psevdocoder/gentleman-ping-bot/internal/apiclient"
 	"github.com/psevdocoder/gentleman-ping-bot/internal/config"
 	"github.com/psevdocoder/gentleman-ping-bot/internal/curlparse"
 	"github.com/psevdocoder/gentleman-ping-bot/internal/sender"
-	cron "github.com/psevdocoder/gentleman-ping-bot/pkg/cron"
+	"github.com/psevdocoder/gentleman-ping-bot/pkg/cron"
+	"github.com/psevdocoder/gentleman-ping-bot/pkg/realtimeconfig"
 )
 
 func main() {
