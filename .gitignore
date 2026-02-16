@@ -33,3 +33,4 @@ go.work.sum
 
 values/*
 !values/config.example.yaml
+CA.crt
