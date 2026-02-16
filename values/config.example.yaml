@@ -1,0 +1,24 @@
+values:
+  - name: curl_file
+    value: "./values/curl.txt"
+    usage: File location with copied from DevTools cURL request for sending message
+
+secrets:
+
+realtime_config:
+  - name: cron_expr
+    value: "* * * * *"
+    usage: cron expr
+  - name: message_text
+    value: |
+     Какой то текст
+    usage: "Текст сообщения"
+  - name: markup
+    value: []
+    usage: "Задает форматирование????"
+  - name: chat_id
+    value: "11111111111"
+    usage: "Определяет, кому слать сообщение"
+  - name: send_enabled
+    value: "true"
+    usage: "Включает или выключает отправку сообщений"
