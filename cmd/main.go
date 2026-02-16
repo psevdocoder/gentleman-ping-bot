@@ -19,15 +19,25 @@ import (
 )
 
 func main() {
-	file, err := os.Open("values/curl.txt")
+	if err := realtimeconfig.StartWatching(); err != nil {
+		log.Fatal(err)
+	}
+
+	curlFilePathRaw, err := config.GetValue(config.CurlFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	curlFilePath, err := curlFilePathRaw.String()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	file, err := os.Open(curlFilePath)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
-
-	if err := realtimeconfig.StartWatching(); err != nil {
-		log.Fatal(err)
-	}
 
 	curlRaw, err := io.ReadAll(file)
 

@@ -64,6 +64,8 @@ func (m *Manager) RemoveTask(name string) error {
 	m.cron.Remove(id)
 	delete(m.entries, name)
 
+	log.Printf("task %s removed", name)
+
 	return nil
 }
 
