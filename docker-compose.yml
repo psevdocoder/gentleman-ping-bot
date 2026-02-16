@@ -1,0 +1,7 @@
+services:
+  gentleman-ping-bot:
+    image: ghcr.io/psevdocoder/gentleman-ping-bot:main
+    container_name: gentleman-ping-bot
+    volumes:
+      - ./values:/app/values
+    restart: unless-stopped

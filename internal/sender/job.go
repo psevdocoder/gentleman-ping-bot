@@ -49,27 +49,22 @@ type apiClient interface {
 }
 
 type SendMessageJob struct {
-	parser      parser
-	client      apiClient
-	messageText string
-	markup      []any
-	chatID      int64
-	sendEnabled bool
+	parser        parser
+	client        apiClient
+	messageTplRaw string
+	markup        []any
+	chatID        int64
+	sendEnabled   bool
 }
 
 func NewSendMessageJob(parser parser, client apiClient) (*SendMessageJob, error) {
 
-	// --- Message text ---
+	// --- Message template (RAW) ---
 	messageRaw, err := config.GetValue(config.MessageText)
 	if err != nil {
 		return nil, err
 	}
-	messageStrRaw, err := messageRaw.String()
-	if err != nil {
-		return nil, err
-	}
-
-	messageStr, err := renderTemplate(messageStrRaw)
+	messageTplRaw, err := messageRaw.String()
 	if err != nil {
 		return nil, err
 	}
@@ -104,13 +99,15 @@ func NewSendMessageJob(parser parser, client apiClient) (*SendMessageJob, error)
 	}
 
 	job := &SendMessageJob{
-		parser:      parser,
-		client:      client,
-		messageText: messageStr,
-		markup:      markup,
-		chatID:      chatID,
-		sendEnabled: sendEnabled,
+		parser:        parser,
+		client:        client,
+		messageTplRaw: messageTplRaw,
+		markup:        markup,
+		chatID:        chatID,
+		sendEnabled:   sendEnabled,
 	}
+
+	// --- Watchers ---
 
 	config.Watch(config.MessageText, func(newValue, oldValue realtimeconfig.Value) {
 		newMessageText, err := newValue.String()
@@ -119,14 +116,8 @@ func NewSendMessageJob(parser parser, client apiClient) (*SendMessageJob, error)
 			return
 		}
 
-		rendered, err := renderTemplate(newMessageText)
-		if err != nil {
-			log.Println("Failed to render template:", err)
-			return
-		}
-
-		job.messageText = rendered
-		log.Println("Applied new message text")
+		job.messageTplRaw = newMessageText
+		log.Println("Applied new message template")
 	})
 
 	config.Watch(config.Markup, func(newValue, oldValue realtimeconfig.Value) {
@@ -200,9 +191,15 @@ func (p *SendMessageJob) Work(ctx context.Context) error {
 		return err
 	}
 
+	// Render template on every execution
+	renderedText, err := renderTemplate(p.messageTplRaw)
+	if err != nil {
+		return err
+	}
+
 	message := Message{
 		UUID:               uuid.New(),
-		Text:               p.messageText,
+		Text:               renderedText,
 		Markup:             p.markup,
 		Kind:               messageKind,
 		Files:              []any{},
@@ -226,8 +223,6 @@ func renderTemplate(input string) (string, error) {
 		"NOW": func() string {
 			return time.Now().Format(time.RFC3339)
 		},
-
-		// It's not a bug, it's a feature :) Поставь звезду, че зря старался ради всех нас?)
 		"DEBUG": func() string {
 			info, ok := debug.ReadBuildInfo()
 
