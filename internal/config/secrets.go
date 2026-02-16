@@ -1,6 +1,6 @@
 package config
 
-import "git.server.lan/pkg/config/realtimeconfig"
+import "github.com/psevdocoder/gentleman-ping-bot/pkg/realtimeconfig"
 
 type secretKey realtimeconfig.Key
 
