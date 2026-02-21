@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"io"
 	"log"
 	"os"
@@ -75,8 +76,11 @@ func main() {
 		}
 
 		if err := cronManager.RemoveTask(senderJob.Name()); err != nil {
-			log.Println("Failed to remove task in live config:", err)
-			return
+			if errors.Is(err, cron.ErrSpecifiedTaskNotFound) {
+				// noop, that's ok
+			} else {
+				log.Println("Failed to remove task:", err)
+			}
 		}
 
 		if err := cronManager.AddTask(ctx, newCronSpecStr, senderJob); err != nil {

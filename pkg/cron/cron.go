@@ -2,12 +2,15 @@ package cron
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"sync"
 
 	"github.com/robfig/cron/v3"
 )
+
+var ErrSpecifiedTaskNotFound = errors.New("specified task not found")
 
 type Manager struct {
 	cron    *cron.Cron
@@ -58,7 +61,7 @@ func (m *Manager) RemoveTask(name string) error {
 
 	id, exists := m.entries[name]
 	if !exists {
-		return fmt.Errorf("task %s not found", name)
+		return ErrSpecifiedTaskNotFound
 	}
 
 	m.cron.Remove(id)
