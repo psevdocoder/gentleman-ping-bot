@@ -7,7 +7,7 @@ secrets:
 
 realtime_config:
   - name: cron_expr
-    value: "* * * * *"
+    value: "0 * * * * *"
     usage: cron expr
   - name: message_text
     value: |
